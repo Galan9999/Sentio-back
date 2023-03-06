@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc",
+    "build:dev": "npx tsc -w",
+    "start": "node dist",
+    "start:dev": "node --watch dist",
+    "test": "npx jest --passWithNoTests",
+    "test:coverage": "npx jest --coverage --watchAll=false --passWithNoTests",
     "prepare": "husky install"
   },
   "keywords": [],
@@ -19,9 +24,7 @@
     "eslint-config-xo-typescript": "^0.56.0",
     "husky": "^8.0.0",
     "lint-staged": "^13.1.2",
+    "prettier": "^2.8.4",
     "typescript": "^4.9.5"
-  },
-  "dependencies": {
-    "prettier": "^2.8.4"
   }
 }
