@@ -1,11 +1,11 @@
 import createDebug from "debug";
 import type CustomError from "../CustomError/CustomError.js";
-import { app } from "./App.js";
+import { app } from "./app.js";
 
 const debug = createDebug("sentio:server:startServer");
 
-const startServer = async (port: number) =>
-  new Promise((resolve, reject) => {
+const startServer = async (port: number) => {
+  await new Promise((resolve, reject) => {
     const server = app.listen(port, () => {
       resolve(server);
     });
@@ -20,5 +20,6 @@ const startServer = async (port: number) =>
       reject(new Error(errorMessage));
     });
   });
+};
 
 export default startServer;
