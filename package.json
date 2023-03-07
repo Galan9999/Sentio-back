@@ -1,5 +1,6 @@
 {
   "name": "carles-galan-final-project-back-202301-bcn",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -36,6 +37,7 @@
   },
   "dependencies": {
     "@types/cors": "^2.8.13",
+    "chalk": "^5.2.0",
     "cors": "^2.8.5",
     "debug": "^4.3.4",
     "dotenv": "^16.0.3",

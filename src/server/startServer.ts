@@ -1,6 +1,6 @@
 import createDebug from "debug";
-import type CustomError from "../CustomError/CustomError";
-import { app } from "./App";
+import type CustomError from "../CustomError/CustomError.js";
+import { app } from "./App.js";
 
 const debug = createDebug("sentio:server:startServer");
 
