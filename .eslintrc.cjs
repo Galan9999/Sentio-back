@@ -6,6 +6,14 @@ module.exports = {
   extends: ["xo", "prettier"],
   overrides: [
     {
+      rules: {
+        "@typescript-eslint/consistent-type-definitions": [
+          "error",
+          "interface",
+        ],
+        "@typescript-eslint/consistent-type-assertions": "off",
+        "no-implicit-coercion": "off",
+      },
       extends: ["xo-typescript", "prettier"],
       files: ["*.ts", "*.tsx"],
     },

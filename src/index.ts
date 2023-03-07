@@ -22,7 +22,7 @@ try {
   await connectDatabase(mongoDbUrl!);
   debug(chalk.green("Connected to database"));
 
-  await startServer(Number(port));
+  await startServer(+port);
   debug(chalk.blue(`Server listening on ${port}`));
 } catch (error) {
   debug(error.message);

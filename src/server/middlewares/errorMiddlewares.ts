@@ -1,7 +1,6 @@
 import createDebug from "debug";
 import { type NextFunction, type Request, type Response } from "express";
 import CustomError from "../../CustomError/CustomError.js";
-import "../utils/statusCodes.js";
 import statusCodes from "../utils/statusCodes.js";
 
 const {
