@@ -10,17 +10,17 @@ export const debug = createDebug("sentio:root");
 const port = process.env.PORT ?? 4000;
 const mongoDbUrl = process.env.MONGODB_CONNECTION_URL;
 
-mongoose.set("toJSON", {
-  virtuals: true,
-  transform(doc, ret) {
-    delete ret._id;
-    delete ret.__v;
-  },
-});
-
 try {
   await connectDatabase(mongoDbUrl!);
   debug(chalk.green("Connected to database"));
+
+  mongoose.set("toJSON", {
+    virtuals: true,
+    transform(doc, ret) {
+      delete ret._id;
+      delete ret.__v;
+    },
+  });
 
   await startServer(+port);
   debug(chalk.blue(`Server listening on ${port}`));
