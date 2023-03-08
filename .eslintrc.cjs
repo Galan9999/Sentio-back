@@ -13,10 +13,13 @@ module.exports = {
         ],
         "@typescript-eslint/consistent-type-assertions": "off",
         "no-implicit-coercion": "off",
-        "@typescript-eslint/naming-convention": "off",
       },
       extends: ["xo-typescript", "prettier"],
       files: ["*.ts", "*.tsx"],
+    },
+    {
+      files: ["src/**/models/**/*.ts"],
+      rules: { "@typescript-eslint/naming-convention": "off" },
     },
   ],
   parserOptions: {
