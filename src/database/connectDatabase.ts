@@ -2,12 +2,9 @@ import mongoose from "mongoose";
 
 const connectDatabase = async (url: string) => {
   mongoose.set("strictQuery", false);
+  mongoose.set("debug", true);
 
-  try {
-    await mongoose.connect(url);
-  } catch (error: unknown) {
-    throw new Error((error as Error).message);
-  }
+  await mongoose.connect(url);
 };
 
 export default connectDatabase;

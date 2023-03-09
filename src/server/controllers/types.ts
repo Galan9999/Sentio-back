@@ -6,6 +6,10 @@ export interface UserCredentials {
   password: string;
 }
 
+export interface RegisterCredentials extends UserCredentials {
+  email: string;
+}
+
 export interface CustomJwtPayload extends JwtPayload {
   sub: string;
   username: string;

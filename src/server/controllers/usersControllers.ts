@@ -1,10 +1,13 @@
 import { type Response, type NextFunction, type Request } from "express";
 import bycrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import createDebug from "debug";
 import CustomError from "../../CustomError/CustomError.js";
 import User from "../../database/models/User.js";
 import statusCodes from "../utils/statusCodes.js";
 import { type UserCredentials } from "./types.js";
+
+const debug = createDebug("sentio:server:controllers:userControllers");
 
 const {
   clientError: { unauthorized },
@@ -23,33 +26,23 @@ const loginUser = async (
 ) => {
   const { username, password } = req.body;
 
-  const userToFind = username.toString();
-
   try {
-    const user = await User.findOne({ username: userToFind }).exec();
+    const user = await User.findOne({ username }).exec();
 
     if (!user) {
-      const error = new CustomError(
+      throw new CustomError(
         "Wrong username!",
         unauthorized,
         "Wrong credentials!"
       );
-
-      next(error);
-
-      return;
     }
 
     if (!(await bycrypt.compare(password, user.password))) {
-      const error = new CustomError(
+      throw new CustomError(
         "Wrong password!",
         unauthorized,
         "Wrong credentials!"
       );
-
-      next(error);
-
-      return;
     }
 
     const jwtPayload = {
@@ -58,14 +51,11 @@ const loginUser = async (
 
     const token = jwt.sign(jwtPayload, process.env.JWT_SECRET!);
 
+    debug(`${username} has been logged successfully`);
+
     res.status(okCode).json({ token });
   } catch (error) {
-    const customError = new CustomError(
-      "Error on server response",
-      internalServer,
-      "Internal server error"
-    );
-    next(customError);
+    next(error);
   }
 };
 
