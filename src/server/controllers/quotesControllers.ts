@@ -1,8 +1,8 @@
 import { type NextFunction, type Request, type Response } from "express";
 import createDebug from "debug";
 import { Quote } from "../../database/models/Quote.js";
-import CustomError from "../../CustomError/CustomError";
-import statusCodes from "../utils/statusCodes";
+import CustomError from "../../CustomError/CustomError.js";
+import statusCodes from "../utils/statusCodes.js";
 
 const {
   clientError: { notFound },

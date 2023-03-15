@@ -1,16 +1,16 @@
-import "../../loadEnvironment";
+import "../../../loadEnvironment";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import request from "supertest";
 import bcrypt from "bcryptjs";
-import connectDatabase from "../../database/connectDatabase";
-import User from "../../database/models/User";
-import { app } from "../app";
+import connectDatabase from "../../../database/connectDatabase";
+import User from "../../../database/models/User";
+import { app } from "../../app";
 import {
   type RegisterCredentials,
   type UserCredentials,
-} from "../controllers/types";
-import statusCodes from "../utils/statusCodes";
+} from "../../controllers/types";
+import statusCodes from "../../utils/statusCodes";
 
 const {
   success: { okCode },
