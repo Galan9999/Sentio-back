@@ -18,7 +18,7 @@ const quoteSchema = new Schema({
     required: true,
   },
   tags: {
-    type: Array,
+    type: [String],
     required: true,
   },
   lived: {

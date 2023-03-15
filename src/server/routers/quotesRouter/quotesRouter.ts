@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getQuotes } from "../../controllers/quotesControllers";
+import { getQuotes } from "../../controllers/quotesControllers.js";
 
 const quotesRouter = Router();
 
