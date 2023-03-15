@@ -20,3 +20,11 @@ export type CustomRequest = Request<
   Record<string, unknown>,
   UserCredentials
 >;
+
+export interface QuoteStructure {
+  author: string;
+  lived: string;
+  tags: string[];
+  quote: string;
+  backgroundInfo: string;
+}
