@@ -23,8 +23,12 @@ export type CustomRequest = Request<
 
 export interface QuoteStructure {
   author: string;
-  lived: string;
-  tags: string[];
+  image: string;
+  country: string;
   quote: string;
+  tags: string[];
+  lived: string;
   backgroundInfo: string;
 }
+
+export type QuotesStructure = QuoteStructure[];

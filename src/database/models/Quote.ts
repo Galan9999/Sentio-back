@@ -5,7 +5,15 @@ const quoteSchema = new Schema({
     type: String,
     required: true,
   },
-  lived: {
+  image: {
+    type: String,
+    requiered: true,
+  },
+  country: {
+    type: String,
+    requiered: true,
+  },
+  quote: {
     type: String,
     required: true,
   },
@@ -13,7 +21,7 @@ const quoteSchema = new Schema({
     type: Array,
     required: true,
   },
-  quote: {
+  lived: {
     type: String,
     required: true,
   },
@@ -23,4 +31,4 @@ const quoteSchema = new Schema({
   },
 });
 
-const User = model("Quote", quoteSchema, "quotes");
+export const Quote = model("Quote", quoteSchema, "quotes");
