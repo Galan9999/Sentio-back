@@ -4,9 +4,12 @@ import { Quote } from "../../database/models/Quote.js";
 import CustomError from "../../CustomError/CustomError.js";
 import statusCodes from "../utils/statusCodes.js";
 import mongoose from "mongoose";
+import { type CustomRequest } from "./types.js";
 
 const {
-  clientError: { notFound },
+  clientError: { notFound, badRequest },
+  serverError: { internalServer },
+  success: { okCode },
 } = statusCodes;
 
 const debug = createDebug("sentio:server:controllers:quoteControllers");
@@ -34,25 +37,31 @@ export const getQuotes = async (
 };
 
 export const deleteQuote = async (
-  req: Request<{ id: string }>,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const id = req.params?.id;
+  const { quoteId } = req.params;
 
   try {
-    if (!mongoose.isValidObjectId(id)) {
-      throw new CustomError("Invalid object id!", 400, "Invalid data!");
+    if (!mongoose.Types.ObjectId.isValid(quoteId)) {
+      throw new CustomError("Invalid object id!", badRequest, "Invalid data!");
     }
 
-    const quoteToDelete = await Quote.findByIdAndDelete(id).exec();
+    const deletedQuote = await Quote.findByIdAndDelete(quoteId).exec();
 
-    if (!quoteToDelete) {
-      throw new CustomError("Mongoose method failed!", 404, "Couldn't delete!");
+    if (!deletedQuote) {
+      throw new CustomError(
+        "Mongoose method failed!",
+        internalServer,
+        "Couldn't delete!"
+      );
     }
 
-    res.status(200).json({ message: `${quoteToDelete.author} deleted!` });
+    res.status(okCode).json({ message: `${deletedQuote.author} deleted!` });
   } catch (error) {
-    next(new CustomError((error as Error).message, 400, "Couldn't delete!"));
+    next(
+      new CustomError((error as Error).message, badRequest, "Couldn't delete!")
+    );
   }
 };

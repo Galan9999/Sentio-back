@@ -15,11 +15,16 @@ export interface CustomJwtPayload extends JwtPayload {
   username: string;
 }
 
-export type CustomRequest = Request<
+export type CustomRequestCredentials = Request<
   Record<string, unknown>,
   Record<string, unknown>,
   UserCredentials
 >;
+
+export interface CustomRequest extends Request {
+  owner: string;
+  id: string;
+}
 export interface QuoteStructure {
   author: string;
   image: string;
@@ -31,8 +36,12 @@ export interface QuoteStructure {
 }
 
 export type QuotesStructure = QuoteStructure[];
-export interface DataBaseResponse extends QuoteStructure {
+export interface DataBaseStructure extends QuoteStructure {
   _id: {
     $oid: string;
   };
+}
+
+export interface QuoteModelStructure extends QuoteStructure {
+  id: string;
 }

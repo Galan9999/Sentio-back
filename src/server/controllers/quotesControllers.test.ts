@@ -1,13 +1,19 @@
 import { type Request, type NextFunction, type Response } from "express";
+import mongoose from "mongoose";
 import CustomError from "../../CustomError/CustomError";
 import { Quote } from "../../database/models/Quote";
 import statusCodes from "../utils/statusCodes";
 import { deleteQuote, getQuotes } from "./quotesControllers";
-import { type DataBaseResponse, type QuotesStructure } from "./types";
+import {
+  type CustomRequest,
+  type DataBaseStructure,
+  type QuotesStructure,
+} from "./types";
 
 const {
   success: { okCode },
   clientError: { notFound, badRequest },
+  serverError: { internalServer },
 } = statusCodes;
 
 const mockQuotesList: QuotesStructure = [
@@ -24,7 +30,7 @@ const mockQuotesList: QuotesStructure = [
   },
 ];
 
-const mockedDataBaseResponse: DataBaseResponse = {
+const mockedDataBaseResponse: DataBaseStructure = {
   _id: {
     $oid: "6411df20c656524ed59cd21f",
   },
@@ -92,43 +98,33 @@ describe("Given the deleteQuote controller", () => {
 
       const databaseResponse = mockedDataBaseResponse;
 
-      request.params = { id: "6411df20c656524ed59cd21f" };
+      request.params = { quoteId: "6411df20c656524ed59cd21f" };
 
       Quote.findOneAndDelete = jest.fn().mockImplementationOnce(() => ({
         exec: jest.fn().mockResolvedValue(databaseResponse),
       }));
 
-      await deleteQuote(
-        request as Request<{ id: string }>,
-        response as Response,
-        next
-      );
+      await deleteQuote(request as CustomRequest, response as Response, next);
 
       expect(response.status).toHaveBeenCalledWith(expectedStatusCode);
       expect(response.json).toHaveBeenCalledWith(expetedBodyResponse);
     });
   });
 
-  describe("When it receives a request with an invalid id format like an empty id", () => {
-    test("Then it should call its next method with an error message of 'invalid data!'", async () => {
+  describe("When it receives a request and the delete process fails", () => {
+    test("Then it should call its next method with an error message of 'Couldn't creates!'", async () => {
       const expectedError = new CustomError(
         "Invalid object id!",
         badRequest,
         "Invalid data!"
       );
 
-      const databaseResponse = mockedDataBaseResponse;
-
       request.params = { id: "" };
 
-      await deleteQuote(
-        request as Request<{ id: string }>,
-        response as Response,
-        next
-      );
+      await deleteQuote(request as CustomRequest, response as Response, next);
 
       Quote.findOneAndDelete = jest.fn().mockImplementationOnce(() => ({
-        exec: jest.fn().mockResolvedValue(databaseResponse),
+        exec: jest.fn().mockResolvedValue(null),
       }));
 
       expect(next).toHaveBeenCalledWith(expectedError);
@@ -138,24 +134,52 @@ describe("Given the deleteQuote controller", () => {
   describe("When it receives a request with an id that dont exists", () => {
     test("Then it should call its next method with an error message of 'Couldn't delete!'", async () => {
       const expectedError = new CustomError(
-        "Mongoose method failed!",
-        notFound,
-        "Couldn't delete!"
+        "Invalid object id!",
+        badRequest,
+        "Invalid data!"
       );
+
+      const databaseResponse = mockedDataBaseResponse;
 
       request.params = { id: "rgegergrwgwg" };
 
       Quote.findOneAndDelete = jest.fn().mockImplementationOnce(() => ({
-        exec: jest.fn().mockResolvedValue(false),
+        exec: jest.fn().mockResolvedValue(databaseResponse),
       }));
 
-      await deleteQuote(
-        request as Request<{ id: string }>,
-        response as Response,
-        next
-      );
+      await deleteQuote(request as CustomRequest, response as Response, next);
 
       expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+
+  describe("When it receives an invalid id", () => {
+    test("Then it should call next function with an error with message 'Please enter a valid Id'", async () => {
+      const expectedErrorMessage = "Invalid data!";
+
+      mongoose.Types.ObjectId.isValid = () => false;
+
+      await deleteQuote(request as CustomRequest, response as Response, next);
+
+      expect.objectContaining({ publicMessage: "Invalid data!" });
+    });
+  });
+
+  describe("When it receives a request and the deleting process fails", () => {
+    test("Then it should call the received next function with message 'Couldn't delete!'", async () => {
+      const expectedErrorMessage = "Couldn't delete!";
+
+      mongoose.Types.ObjectId.isValid = () => true;
+
+      Quote.findByIdAndDelete = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue(null),
+      }));
+
+      await deleteQuote(request as CustomRequest, response as Response, next);
+
+      expect(next).toHaveBeenCalledWith(
+        expect.objectContaining({ publicMessage: expectedErrorMessage })
+      );
     });
   });
 });
