@@ -20,7 +20,6 @@ export type CustomRequest = Request<
   Record<string, unknown>,
   UserCredentials
 >;
-
 export interface QuoteStructure {
   author: string;
   image: string;
@@ -32,3 +31,8 @@ export interface QuoteStructure {
 }
 
 export type QuotesStructure = QuoteStructure[];
+export interface DataBaseResponse extends QuoteStructure {
+  _id: {
+    $oid: string;
+  };
+}

@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { getQuotes } from "../../controllers/quotesControllers.js";
+import { deleteQuote, getQuotes } from "../../controllers/quotesControllers.js";
 
 const quotesRouter = Router();
 
 quotesRouter.get("/", getQuotes);
+quotesRouter.delete("/delete/:quoteId", deleteQuote);
 
 export default quotesRouter;
