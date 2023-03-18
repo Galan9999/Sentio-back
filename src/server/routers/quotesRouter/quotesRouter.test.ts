@@ -4,11 +4,11 @@ import request from "supertest";
 import connectDatabase from "../../../database/connectDatabase";
 import { Quote } from "../../../database/models/Quote";
 import { app } from "../../app";
-import {
-  type QuoteStructure,
-  type QuotesStructure,
-} from "../../controllers/types";
+import { type QuoteStructure } from "../../controllers/types";
+import { mockCustomStructureRequest } from "../../utils/mocks";
 import statusCodes from "../../utils/statusCodes";
+
+const quote = mockCustomStructureRequest.body;
 
 const {
   success: { okCode },
@@ -52,6 +52,21 @@ describe("Given GET '/quotes' endpoint", () => {
 
       expect(response.body).toHaveProperty("quotes");
       expect(response.body.quotes).toHaveLength(1);
+    });
+  });
+});
+
+describe("Given DELETE '/delete' endpoint", () => {
+  describe("When it receives a request and there is an id on the request params", () => {
+    test("Then it should return a response with status code 200 and a message with the author's name deleted in the response body", async () => {
+      const { _id: id } = await Quote.create(quote);
+      const expectedResult = { message: "Frida Kahlo deleted!" };
+
+      const response = await request(app)
+        .delete(`${quotesUrl}/delete/${id.toString()}`)
+        .expect(okCode);
+
+      expect(response.body).toStrictEqual(expectedResult);
     });
   });
 });

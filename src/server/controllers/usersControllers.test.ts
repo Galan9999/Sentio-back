@@ -1,7 +1,7 @@
 import { type Response, type NextFunction } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { type CustomRequest, type UserCredentials } from "./types";
+import { type CustomRequestCredentials, type UserCredentials } from "./types";
 import loginUser from "./usersControllers";
 import statusCodes from "../utils/statusCodes";
 import User from "../../database/models/User";
@@ -18,7 +18,7 @@ const carles: UserCredentials = {
   password: "galan99",
 };
 
-const request: Partial<CustomRequest> = {
+const request: Partial<CustomRequestCredentials> = {
   body: carles,
 };
 
@@ -46,7 +46,11 @@ describe("Given the loginUser controller", () => {
 
       jwt.sign = jest.fn().mockReturnValue(expectedBody.token);
 
-      await loginUser(request as CustomRequest, response as Response, next);
+      await loginUser(
+        request as CustomRequestCredentials,
+        response as Response,
+        next
+      );
 
       expect(response.status).toHaveBeenCalledWith(expectedStatus);
       expect(response.json).toHaveBeenCalledWith(expectedBody);
@@ -65,7 +69,11 @@ describe("Given the loginUser controller", () => {
         exec: jest.fn().mockResolvedValue(false),
       }));
 
-      await loginUser(request as CustomRequest, response as Response, next);
+      await loginUser(
+        request as CustomRequestCredentials,
+        response as Response,
+        next
+      );
 
       expect(next).toHaveBeenCalledWith(customError);
     });
@@ -84,7 +92,11 @@ describe("Given the loginUser controller", () => {
 
       bcrypt.compare = jest.fn().mockResolvedValue(false);
 
-      await loginUser(request as CustomRequest, response as Response, next);
+      await loginUser(
+        request as CustomRequestCredentials,
+        response as Response,
+        next
+      );
 
       expect(next).toHaveBeenCalledWith(customError);
     });
@@ -102,7 +114,11 @@ describe("Given the loginUser controller", () => {
         exec: jest.fn().mockRejectedValue(customError),
       }));
 
-      await loginUser(request as CustomRequest, response as Response, next);
+      await loginUser(
+        request as CustomRequestCredentials,
+        response as Response,
+        next
+      );
 
       expect(next).toHaveBeenCalledWith(customError);
     });
