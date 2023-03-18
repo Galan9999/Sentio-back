@@ -1,5 +1,4 @@
 import "./loadEnvironment.js";
-import mongoose from "mongoose";
 import createDebug from "debug";
 import chalk from "chalk";
 import connectDatabase from "./database/connectDatabase.js";
