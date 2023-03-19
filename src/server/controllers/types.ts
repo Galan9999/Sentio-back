@@ -11,7 +11,7 @@ export interface RegisterCredentials extends UserCredentials {
 }
 
 export interface CustomJwtPayload extends JwtPayload {
-  sub: string;
+  id: string;
   username: string;
 }
 
@@ -44,4 +44,15 @@ export interface DataBaseStructure extends QuoteStructure {
 
 export interface QuoteModelStructure extends QuoteStructure {
   id: string;
+}
+
+export interface CustomQuoteRequest
+  extends Request<
+    Record<string, unknown>,
+    Record<string, unknown>,
+    QuoteStructure,
+    { token: string }
+  > {
+  userId: string;
+  imageBackUp: string;
 }
