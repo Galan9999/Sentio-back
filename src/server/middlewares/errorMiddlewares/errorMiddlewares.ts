@@ -1,5 +1,6 @@
 import createDebug from "debug";
 import { type NextFunction, type Request, type Response } from "express";
+import { ValidationError } from "express-validation";
 import CustomError from "../../../CustomError/CustomError.js";
 import statusCodes from "../../utils/statusCodes.js";
 
@@ -30,10 +31,18 @@ export const generalError = (
   res: Response,
   next: NextFunction
 ) => {
+  if (error instanceof ValidationError) {
+    const errors = error.details.body
+      ?.map((detail) => detail.message)
+      .join(" & ");
+
+    debug(errors);
+    error.publicMessage = errors!;
+  }
+
   debug(error.message);
 
-  const statusCode = error.statusCode || internalServer;
-  const publicMessage = error.publicMessage || "Something went wrong";
-
-  res.status(statusCode).json({ error: publicMessage });
+  res
+    .status(error.statusCode || internalServer)
+    .json({ error: error.publicMessage || "Something went wrong" });
 };

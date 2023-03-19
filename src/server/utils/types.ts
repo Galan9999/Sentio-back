@@ -1,5 +1,10 @@
 interface StatusCode {
-  clientError: { notFound: number; badRequest: number; unauthorized: number };
+  clientError: {
+    notFound: number;
+    badRequest: number;
+    unauthorized: number;
+    conflict: number;
+  };
   serverError: {
     internalServer: number;
   };

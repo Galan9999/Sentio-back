@@ -1,4 +1,4 @@
-export const mockCustomStructureRequest = {
+export const mockCustomQuoteRequest = {
   body: {
     id: "6411df20c656524ed59cd227",
     author: "Frida Kahlo",
@@ -8,6 +8,7 @@ export const mockCustomStructureRequest = {
     quote: "Feet, what do I need them for if I have wings to fly?",
     tags: ["artists"],
     lived: "1907 - 1954",
+    owner: "jdwjdw",
     backgroundInfo:
       "Frida Kahlo was a Mexican painter known for her self-portraits, which often incorporated elements of her physical and emotional pain.",
   },

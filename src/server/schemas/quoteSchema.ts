@@ -2,13 +2,14 @@ import { Joi } from "express-validation";
 
 const createQuoteSchema = {
   body: Joi.object({
-    author: Joi.string().max(20).required(),
-    image: Joi.string().required(),
-    country: Joi.string().max(20).required(),
-    quote: Joi.string().max(500).required(),
-    tags: Joi.array().items(Joi.string().max(20)).required(),
-    lived: Joi.string().max(20).required(),
-    backgroundInfo: Joi.string().max(500).required(),
+    author: Joi.string().required(),
+    image: Joi.required(),
+    country: Joi.string().required(),
+    quote: Joi.string().required(),
+    tags: Joi.string().required(),
+    lived: Joi.string().required(),
+    owner: Joi.string().required(),
+    backgroundInfo: Joi.string().required(),
   }),
 };
 

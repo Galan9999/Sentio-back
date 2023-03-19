@@ -54,5 +54,4 @@ export interface CustomQuoteRequest
     { token: string }
   > {
   userId: string;
-  imageBackUp: string;
 }

@@ -3,17 +3,18 @@ import mongoose from "mongoose";
 import CustomError from "../../../CustomError/CustomError";
 import { Quote } from "../../../database/models/Quote";
 import statusCodes from "../../utils/statusCodes";
-import { deleteQuote, getQuotes } from "./quotesControllers";
+import { createQuote, deleteQuote, getQuotes } from "./quotesControllers";
 import {
+  type CustomQuoteRequest,
   type CustomRequest,
   type DataBaseStructure,
   type QuotesStructure,
 } from "../types";
+import { mockCustomQuoteRequest } from "../../utils/mocks";
 
 const {
-  success: { okCode },
-  clientError: { notFound, badRequest },
-  serverError: { internalServer },
+  success: { okCode, created },
+  clientError: { notFound, badRequest, conflict },
 } = statusCodes;
 
 const mockQuotesList: QuotesStructure = [
@@ -161,7 +162,7 @@ describe("Given the deleteQuote controller", () => {
 
       await deleteQuote(request as CustomRequest, response as Response, next);
 
-      expect.objectContaining({ publicMessage: "Invalid data!" });
+      expect.objectContaining({ publicMessage: expectedErrorMessage });
     });
   });
 
@@ -180,6 +181,50 @@ describe("Given the deleteQuote controller", () => {
       expect(next).toHaveBeenCalledWith(
         expect.objectContaining({ publicMessage: expectedErrorMessage })
       );
+    });
+  });
+});
+
+describe("Given the createQuote controller", () => {
+  describe("When it recieves a request with 'Frida Kahlo'", () => {
+    test("Then it should respond with a message `Frida Kahlo created`", async () => {
+      const expectedStatus = created;
+      const expectedBody = { message: "Frida Kahlo created!" };
+
+      const request: Partial<CustomQuoteRequest> = mockCustomQuoteRequest;
+
+      Quote.create = jest.fn().mockResolvedValue(request.body);
+
+      await createQuote(
+        request as CustomQuoteRequest,
+        response as Response,
+        next
+      );
+
+      expect(response.status).toHaveBeenCalledWith(expectedStatus);
+      expect(response.json).toHaveBeenCalledWith(expectedBody);
+    });
+  });
+
+  describe("When it recieves a request with 'Frida Kahlo'", () => {
+    test("Then it should respond with a message `Couldn't create!`", async () => {
+      const expectedError = new CustomError(
+        "Couldn't create quote!",
+        conflict,
+        "Couldn't create quote!"
+      );
+
+      const request: Partial<CustomQuoteRequest> = mockCustomQuoteRequest;
+
+      Quote.create = jest.fn().mockReturnValue(false);
+
+      await createQuote(
+        request as CustomQuoteRequest,
+        response as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
 });

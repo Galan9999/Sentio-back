@@ -7,9 +7,9 @@ import mongoose from "mongoose";
 import { type CustomRequest, type CustomQuoteRequest } from "../types.js";
 
 const {
-  clientError: { notFound, badRequest },
+  clientError: { notFound, badRequest, conflict },
   serverError: { internalServer },
-  success: { okCode },
+  success: { okCode, created },
 } = statusCodes;
 
 const debug = createDebug("sentio:server:controllers:quoteControllers");
@@ -80,16 +80,16 @@ export const createQuote = async (
     });
     if (!newQuote) {
       throw new CustomError(
-        `Can't create structure`,
-        409,
-        "Can't create structure"
+        `Couldn't create quote!`,
+        conflict,
+        "Couldn't create quote!"
       );
     }
 
-    res.status(201).json({ message: `${newQuote.author} created` });
+    res.status(created).json({ message: `${newQuote.author} created!` });
   } catch (error) {
     next(
-      new CustomError((error as Error).message, 409, "Can't create structure")
+      new CustomError((error as Error).message, 409, "Couldn't create quote!")
     );
   }
 };

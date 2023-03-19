@@ -4,11 +4,12 @@ export const statusCodes = {
     badRequest: 400,
     unauthorized: 401,
     forbidden: 403,
+    conflict: 409,
   },
   serverError: {
     internalServer: 500,
   },
-  success: { okCode: 200 },
+  success: { okCode: 200, created: 201 },
 };
 
 export default statusCodes;

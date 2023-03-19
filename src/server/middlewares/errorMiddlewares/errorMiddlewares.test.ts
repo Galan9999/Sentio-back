@@ -1,7 +1,14 @@
-import { type NextFunction, type Request, type Response } from "express";
+import {
+  request,
+  response,
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
 import CustomError from "../../../CustomError/CustomError";
 import { generalError, notFoundError } from "./errorMiddlewares";
 import statusCodes from "../../utils/statusCodes";
+import { type errors, ValidationError } from "express-validation";
 const {
   clientError: { notFound, badRequest },
   serverError: { internalServer },
@@ -58,6 +65,44 @@ describe("Given the 'generalError' middleware", () => {
 
       expect(res.status).toHaveBeenCalledWith(internalServer);
       expect(res.json).toHaveBeenCalledWith({ error: expectedPublicMessage });
+    });
+  });
+
+  describe("When it receives a validation error", () => {
+    test.only("Then it should emit a response with the error status ", async () => {
+      const error: errors = {
+        body: [
+          {
+            name: "ValidationError",
+            isJoi: true,
+            annotate(stripColors) {
+              return "";
+            },
+            _original: "",
+            message: "email is not allowed to be empty",
+            details: [
+              {
+                message: "",
+                path: [""],
+                type: "",
+              },
+            ],
+          },
+        ],
+      };
+      const expectedStatus = badRequest;
+      const publicMessage = "'email' is not allowed to be empty";
+      const validationError = new ValidationError(error, { statusCode: 400 });
+
+      generalError(
+        validationError as unknown as CustomError,
+        request,
+        response,
+        next
+      );
+
+      expect(response.json).toHaveBeenCalledWith({ error: publicMessage });
+      expect(response.status).toBeCalledWith(expectedStatus);
     });
   });
 });
