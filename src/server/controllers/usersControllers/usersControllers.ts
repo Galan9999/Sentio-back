@@ -2,10 +2,10 @@ import { type Response, type NextFunction, type Request } from "express";
 import bycrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import createDebug from "debug";
-import CustomError from "../../CustomError/CustomError.js";
-import User from "../../database/models/User.js";
-import statusCodes from "../utils/statusCodes.js";
-import { type UserCredentials } from "./types.js";
+import CustomError from "../../../CustomError/CustomError.js";
+import User from "../../../database/models/User.js";
+import statusCodes from "../../utils/statusCodes.js";
+import { type UserCredentials } from "../types.js";
 
 const debug = createDebug("sentio:server:controllers:userControllers");
 

@@ -1,11 +1,11 @@
 import { type Response, type NextFunction } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { type CustomRequestCredentials, type UserCredentials } from "./types";
+import { type CustomRequestCredentials, type UserCredentials } from "../types";
 import loginUser from "./usersControllers";
-import statusCodes from "../utils/statusCodes";
-import User from "../../database/models/User";
-import CustomError from "../../CustomError/CustomError";
+import statusCodes from "../../utils/statusCodes";
+import User from "../../../database/models/User";
+import CustomError from "../../../CustomError/CustomError";
 
 const {
   success: { okCode },

@@ -1,14 +1,14 @@
 import { type Request, type NextFunction, type Response } from "express";
 import mongoose from "mongoose";
-import CustomError from "../../CustomError/CustomError";
-import { Quote } from "../../database/models/Quote";
-import statusCodes from "../utils/statusCodes";
+import CustomError from "../../../CustomError/CustomError";
+import { Quote } from "../../../database/models/Quote";
+import statusCodes from "../../utils/statusCodes";
 import { deleteQuote, getQuotes } from "./quotesControllers";
 import {
   type CustomRequest,
   type DataBaseStructure,
   type QuotesStructure,
-} from "./types";
+} from "../types";
 
 const {
   success: { okCode },
@@ -112,7 +112,7 @@ describe("Given the deleteQuote controller", () => {
   });
 
   describe("When it receives a request and the delete process fails", () => {
-    test("Then it should call its next method with an error message of 'Couldn't creates!'", async () => {
+    test("Then it should call its next method with an error message of 'Invalid data!'", async () => {
       const expectedError = new CustomError(
         "Invalid object id!",
         badRequest,
@@ -132,7 +132,7 @@ describe("Given the deleteQuote controller", () => {
   });
 
   describe("When it receives a request with an id that dont exists", () => {
-    test("Then it should call its next method with an error message of 'Couldn't delete!'", async () => {
+    test("Then it should call its next method with an error message of 'Invalid data!'", async () => {
       const expectedError = new CustomError(
         "Invalid object id!",
         badRequest,
@@ -154,7 +154,7 @@ describe("Given the deleteQuote controller", () => {
   });
 
   describe("When it receives an invalid id", () => {
-    test("Then it should call next function with an error with message 'Please enter a valid Id'", async () => {
+    test("Then it should call next function with an error with message 'Invalid data'", async () => {
       const expectedErrorMessage = "Invalid data!";
 
       mongoose.Types.ObjectId.isValid = () => false;

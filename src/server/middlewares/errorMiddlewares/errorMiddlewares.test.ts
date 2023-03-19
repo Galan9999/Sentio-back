@@ -1,7 +1,7 @@
 import { type NextFunction, type Request, type Response } from "express";
-import CustomError from "../../CustomError/CustomError";
+import CustomError from "../../../CustomError/CustomError";
 import { generalError, notFoundError } from "./errorMiddlewares";
-import statusCodes from "../utils/statusCodes";
+import statusCodes from "../../utils/statusCodes";
 const {
   clientError: { notFound, badRequest },
   serverError: { internalServer },
