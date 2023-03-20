@@ -1,4 +1,5 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, SchemaTypes } from "mongoose";
+import User from "./User.js";
 
 const quoteSchema = new Schema({
   author: {
@@ -18,7 +19,7 @@ const quoteSchema = new Schema({
     required: true,
   },
   tags: {
-    type: [String],
+    type: String,
     required: true,
   },
   lived: {
@@ -28,6 +29,10 @@ const quoteSchema = new Schema({
   backgroundInfo: {
     type: String,
     required: true,
+  },
+  owner: {
+    type: SchemaTypes.ObjectId,
+    ref: User,
   },
 });
 

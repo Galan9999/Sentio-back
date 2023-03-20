@@ -61,7 +61,7 @@ describe("Given POST 'users/login endpoint", () => {
     test("Then is should return a response with status 401 and message 'Wrong username'", async () => {
       const loginCredentials: UserCredentials = {
         username: "carlito",
-        password,
+        password: "",
       };
       const expectedMessage = "Wrong credentials!";
 

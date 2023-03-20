@@ -1,19 +1,20 @@
 import { type Request, type NextFunction, type Response } from "express";
 import mongoose from "mongoose";
-import CustomError from "../../CustomError/CustomError";
-import { Quote } from "../../database/models/Quote";
-import statusCodes from "../utils/statusCodes";
-import { deleteQuote, getQuotes } from "./quotesControllers";
+import CustomError from "../../../CustomError/CustomError";
+import { Quote } from "../../../database/models/Quote";
+import statusCodes from "../../utils/statusCodes";
+import { createQuote, deleteQuote, getQuotes } from "./quotesControllers";
 import {
+  type CustomQuoteRequest,
   type CustomRequest,
   type DataBaseStructure,
   type QuotesStructure,
-} from "./types";
+} from "../types";
+import { mockCustomQuoteRequest } from "../../utils/mocks";
 
 const {
-  success: { okCode },
-  clientError: { notFound, badRequest },
-  serverError: { internalServer },
+  success: { okCode, created },
+  clientError: { notFound, badRequest, conflict },
 } = statusCodes;
 
 const mockQuotesList: QuotesStructure = [
@@ -22,7 +23,8 @@ const mockQuotesList: QuotesStructure = [
     image: "imagepath",
     country: "France",
     lived: "31/03/1596-11/02/1650",
-    tags: ["#politics", "#philosphy"],
+    tags: "#politics",
+    owner: "1234",
     quote:
       "If you would be a real seeker after truth, it is necessary that at least once in your life you doubt, as far as possible, all things",
     backgroundInfo:
@@ -40,8 +42,9 @@ const mockedDataBaseResponse: DataBaseStructure = {
   country: "United States",
   quote:
     "Change will not come if we wait for some other person or some other time. We are the ones we've been waiting for. We are the change that we seek.",
-  tags: ["politics"],
+  tags: "politics",
   lived: "1961 - present",
+  owner: "12345",
   backgroundInfo:
     "Barack Obama is an American politician and attorney who served as the 44th president of the United States from 2009 to 2017.",
 };
@@ -112,7 +115,7 @@ describe("Given the deleteQuote controller", () => {
   });
 
   describe("When it receives a request and the delete process fails", () => {
-    test("Then it should call its next method with an error message of 'Couldn't creates!'", async () => {
+    test("Then it should call its next method with an error message of 'Invalid data!'", async () => {
       const expectedError = new CustomError(
         "Invalid object id!",
         badRequest,
@@ -132,7 +135,7 @@ describe("Given the deleteQuote controller", () => {
   });
 
   describe("When it receives a request with an id that dont exists", () => {
-    test("Then it should call its next method with an error message of 'Couldn't delete!'", async () => {
+    test("Then it should call its next method with an error message of 'Invalid data!'", async () => {
       const expectedError = new CustomError(
         "Invalid object id!",
         badRequest,
@@ -154,14 +157,14 @@ describe("Given the deleteQuote controller", () => {
   });
 
   describe("When it receives an invalid id", () => {
-    test("Then it should call next function with an error with message 'Please enter a valid Id'", async () => {
+    test("Then it should call next function with an error with message 'Invalid data'", async () => {
       const expectedErrorMessage = "Invalid data!";
 
       mongoose.Types.ObjectId.isValid = () => false;
 
       await deleteQuote(request as CustomRequest, response as Response, next);
 
-      expect.objectContaining({ publicMessage: "Invalid data!" });
+      expect.objectContaining({ publicMessage: expectedErrorMessage });
     });
   });
 
@@ -180,6 +183,50 @@ describe("Given the deleteQuote controller", () => {
       expect(next).toHaveBeenCalledWith(
         expect.objectContaining({ publicMessage: expectedErrorMessage })
       );
+    });
+  });
+});
+
+describe("Given the createQuote controller", () => {
+  describe("When it recieves a request with 'Frida Kahlo'", () => {
+    test("Then it should respond with a message `Frida Kahlo created`", async () => {
+      const expectedStatus = created;
+      const expectedBody = { message: "Frida Kahlo created!" };
+
+      const request: Partial<CustomQuoteRequest> = mockCustomQuoteRequest;
+
+      Quote.create = jest.fn().mockResolvedValue(request.body);
+
+      await createQuote(
+        request as CustomQuoteRequest,
+        response as Response,
+        next
+      );
+
+      expect(response.status).toHaveBeenCalledWith(expectedStatus);
+      expect(response.json).toHaveBeenCalledWith(expectedBody);
+    });
+  });
+
+  describe("When it recieves a request with 'Frida Kahlo'", () => {
+    test("Then it should respond with a message `Couldn't create!`", async () => {
+      const expectedError = new CustomError(
+        "Couldn't create quote!",
+        conflict,
+        "Couldn't create quote!"
+      );
+
+      const request: Partial<CustomQuoteRequest> = mockCustomQuoteRequest;
+
+      Quote.create = jest.fn().mockReturnValue(false);
+
+      await createQuote(
+        request as CustomQuoteRequest,
+        response as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
 });

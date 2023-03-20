@@ -1,15 +1,15 @@
 import { type NextFunction, type Request, type Response } from "express";
 import createDebug from "debug";
-import { Quote } from "../../database/models/Quote.js";
-import CustomError from "../../CustomError/CustomError.js";
-import statusCodes from "../utils/statusCodes.js";
+import { Quote } from "../../../database/models/Quote.js";
+import CustomError from "../../../CustomError/CustomError.js";
+import statusCodes from "../../utils/statusCodes.js";
 import mongoose from "mongoose";
-import { type CustomRequest } from "./types.js";
+import { type CustomRequest, type CustomQuoteRequest } from "../types.js";
 
 const {
-  clientError: { notFound, badRequest },
+  clientError: { notFound, badRequest, conflict },
   serverError: { internalServer },
-  success: { okCode },
+  success: { okCode, created },
 } = statusCodes;
 
 const debug = createDebug("sentio:server:controllers:quoteControllers");
@@ -62,6 +62,34 @@ export const deleteQuote = async (
   } catch (error) {
     next(
       new CustomError((error as Error).message, badRequest, "Couldn't delete!")
+    );
+  }
+};
+
+export const createQuote = async (
+  req: CustomQuoteRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { body } = req;
+  const owner = req.userId;
+  try {
+    const newQuote = await Quote.create({
+      ...body,
+      owner,
+    });
+    if (!newQuote) {
+      throw new CustomError(
+        `Couldn't create quote!`,
+        conflict,
+        "Couldn't create quote!"
+      );
+    }
+
+    res.status(created).json({ message: `${newQuote.author} created!` });
+  } catch (error) {
+    next(
+      new CustomError((error as Error).message, 409, "Couldn't create quote!")
     );
   }
 };
