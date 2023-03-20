@@ -41,8 +41,9 @@ describe("Given GET '/quotes' endpoint", () => {
           "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Frida_Kahlo%2C_by_Guillermo_Kahlo.jpg/440px-Frida_Kahlo%2C_by_Guillermo_Kahlo.jpg",
         country: "Mexico",
         quote: "Feet, what do I need them for if I have wings to fly?",
-        tags: ["artists"],
+        tags: "artists",
         lived: "1907 - 1954",
+        owner: "6408566fc095933dd9f089b2",
         backgroundInfo:
           "Frida Kahlo was a Mexican painter known for her self-portraits, which often incorporated elements of her physical and emotional pain.",
       };
@@ -76,30 +77,29 @@ describe("Given DELETE '/delete' endpoint", () => {
   });
 });
 
-describe("Given Create structure route", () => {
+describe("Given Create Quote endpoint", () => {
   describe("When it receives a request with `Frida Kahlo`", () => {
-    test.only("Then it should return an object with the property message: `Frida Kahlo created!`", async () => {
+    test("Then it should return an object with the property message: `Frida Kahlo created!`", async () => {
       const bearerToken =
         "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDA4NTY2ZmMwOTU5MzNkZDlmMDg5YjIiLCJpYXQiOjE2NzkyMzg5NDN9.nf7TyY0ymlLkHA9OC6EvK692Fhrl__ASAk27VWbeHIM";
       const expectedResult = { message: "Frida Kahlo created!" };
 
       const response = await request(app)
         .post(`/quotes/create`)
-        .set("Authorization", bearerToken)
-        .field("author", "Frida Kahlo")
-        .field(
-          "image",
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Frida_Kahlo%2C_by_Guillermo_Kahlo.jpg/440px-Frida_Kahlo%2C_by_Guillermo_Kahlo.jpg"
-        )
-        .field("country", "Mexico")
-        .field("quote", "Feet, what do I need them for if I have wings to fly?")
-        .field("tags", ["artists"])
-        .field("lived", "1907 - 1954")
-        .field("owner", "1234")
-        .field(
-          "backgroundInfo",
-          "Frida Kahlo was a Mexican painter known for her self-portraits, which often incorporated elements of her physical and emotional pain."
-        )
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        .set({ Authorization: bearerToken })
+        .send({
+          author: "Frida Kahlo",
+          image:
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Frida_Kahlo%2C_by_Guillermo_Kahlo.jpg/440px-Frida_Kahlo%2C_by_Guillermo_Kahlo.jpg",
+          country: "Mexico",
+          quote: "Feet, what do I need them for if I have wings to fly?",
+          tags: "artists",
+          lived: "1907 - 1954",
+          owner: "1234",
+          backgroundInfo:
+            "Frida Kahlo was a Mexican painter known for her self-portraits, which often incorporated elements of her physical and emotional pain.",
+        })
         .expect(created);
 
       expect(response.body).toStrictEqual(expectedResult);

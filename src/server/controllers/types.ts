@@ -30,9 +30,10 @@ export interface QuoteStructure {
   image: string;
   country: string;
   quote: string;
-  tags: string[];
+  tags: string;
   lived: string;
   backgroundInfo: string;
+  owner: string;
 }
 
 export type QuotesStructure = QuoteStructure[];

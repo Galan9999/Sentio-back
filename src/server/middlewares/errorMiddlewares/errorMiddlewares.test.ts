@@ -1,10 +1,4 @@
-import {
-  request,
-  response,
-  type NextFunction,
-  type Request,
-  type Response,
-} from "express";
+import { type NextFunction, type Request, type Response } from "express";
 import CustomError from "../../../CustomError/CustomError";
 import { generalError, notFoundError } from "./errorMiddlewares";
 import statusCodes from "../../utils/statusCodes";
@@ -16,9 +10,9 @@ const {
 
 beforeEach(() => jest.clearAllMocks());
 
-const req = {} as Request;
+const request: Partial<Request> = {};
 
-const res = {
+const response = {
   status: jest.fn().mockReturnThis(),
   json: jest.fn(),
 } as Partial<Response>;
@@ -34,7 +28,7 @@ describe("Given the 'notFoundError' middleware", () => {
         "Endpoint not found"
       );
 
-      notFoundError(req, res as Response, next);
+      notFoundError(request as Request, response as Response, next);
 
       expect(next).toHaveBeenCalledWith(expectedError);
     });
@@ -49,10 +43,12 @@ describe("Given the 'generalError' middleware", () => {
         badRequest,
         "Something went wrong"
       );
-      generalError(error, req, res as Response, next);
+      generalError(error, request as Request, response as Response, next);
 
-      expect(res.status).toHaveBeenCalledWith(badRequest);
-      expect(res.json).toHaveBeenCalledWith({ error: error.publicMessage });
+      expect(response.status).toHaveBeenCalledWith(badRequest);
+      expect(response.json).toHaveBeenCalledWith({
+        error: error.publicMessage,
+      });
     });
   });
 
@@ -61,15 +57,22 @@ describe("Given the 'generalError' middleware", () => {
       const error = new Error();
       const expectedPublicMessage = "Something went wrong";
 
-      generalError(error as CustomError, req, res as Response, next);
+      generalError(
+        error as CustomError,
+        request as Request,
+        response as Response,
+        next
+      );
 
-      expect(res.status).toHaveBeenCalledWith(internalServer);
-      expect(res.json).toHaveBeenCalledWith({ error: expectedPublicMessage });
+      expect(response.status).toHaveBeenCalledWith(internalServer);
+      expect(response.json).toHaveBeenCalledWith({
+        error: expectedPublicMessage,
+      });
     });
   });
 
   describe("When it receives a validation error", () => {
-    test.only("Then it should emit a response with the error status ", async () => {
+    test("Then it should emit a response with the error status ", async () => {
       const error: errors = {
         body: [
           {
@@ -79,7 +82,7 @@ describe("Given the 'generalError' middleware", () => {
               return "";
             },
             _original: "",
-            message: "email is not allowed to be empty",
+            message: "'email' is not allowed to be empty",
             details: [
               {
                 message: "",
@@ -96,8 +99,8 @@ describe("Given the 'generalError' middleware", () => {
 
       generalError(
         validationError as unknown as CustomError,
-        request,
-        response,
+        request as Request,
+        response as Response,
         next
       );
 

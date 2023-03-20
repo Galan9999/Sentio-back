@@ -2,13 +2,13 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  testMatch: ["**/src/**/*.test.ts"],
+  testMatch: ["**/src/**/routers/**/*.test.ts"],
   resolver: "jest-ts-webcompat-resolver",
   collectCoverageFrom: [
     "src/**/*.ts",
     "!src/index.ts",
     "!src/server/startServer.ts",
-    "!src/database/connectDataBase.ts",
+    "!src/database/connectDatabase.ts",
   ],
-  coverageDirectory: "coverage/unit",
+  coverageDirectory: "coverage/integration",
 };
