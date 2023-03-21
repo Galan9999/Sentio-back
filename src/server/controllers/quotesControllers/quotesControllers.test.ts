@@ -3,7 +3,12 @@ import mongoose from "mongoose";
 import CustomError from "../../../CustomError/CustomError";
 import { Quote } from "../../../database/models/Quote";
 import statusCodes from "../../utils/statusCodes";
-import { createQuote, deleteQuote, getQuotes } from "./quotesControllers";
+import {
+  createQuote,
+  deleteQuote,
+  getQuoteById,
+  getQuotes,
+} from "./quotesControllers";
 import {
   type CustomQuoteRequest,
   type CustomRequest,
@@ -36,6 +41,21 @@ const mockedDataBaseResponse: DataBaseStructure = {
   _id: {
     $oid: "6411df20c656524ed59cd21f",
   },
+  author: "Barack Obama",
+  image:
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/President_Barack_Obama.jpg/440px-President_Barack_Obama.jpg",
+  country: "United States",
+  quote:
+    "Change will not come if we wait for some other person or some other time. We are the ones we've been waiting for. We are the change that we seek.",
+  tags: "politics",
+  lived: "1961 - present",
+  owner: "12345",
+  backgroundInfo:
+    "Barack Obama is an American politician and attorney who served as the 44th president of the United States from 2009 to 2017.",
+};
+
+const mockedQuote = {
+  id: "6411df20c656524ed59cd21f",
   author: "Barack Obama",
   image:
     "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/President_Barack_Obama.jpg/440px-President_Barack_Obama.jpg",
@@ -146,7 +166,7 @@ describe("Given the deleteQuote controller", () => {
 
       request.params = { id: "rgegergrwgwg" };
 
-      Quote.findOneAndDelete = jest.fn().mockImplementationOnce(() => ({
+      Quote.findById = jest.fn().mockImplementationOnce(() => ({
         exec: jest.fn().mockResolvedValue(databaseResponse),
       }));
 
@@ -225,6 +245,61 @@ describe("Given the createQuote controller", () => {
         response as Response,
         next
       );
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+});
+
+describe("Given getQuote controller", () => {
+  const req: Partial<Request> = {
+    params: { quoteId: mockedQuote.id },
+  };
+  describe("When it recieves a request with the id: `6411df20c656524ed59cd21f`", () => {
+    test("Then it should respond with status 200 and respond with a quote with id `6411df20c656524ed59cd21f`", async () => {
+      Quote.findOne = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue(mockedQuote),
+      }));
+
+      await getQuoteById(req as Request, response as Response, next);
+
+      expect(response.status).toHaveBeenCalledWith(okCode);
+    });
+  });
+  describe("When the finding quote process fails", () => {
+    test("Then it should call its next method with an error message: 'Quote not found!' and status 404", async () => {
+      const expectedError = new CustomError(
+        "Couldn't get!",
+        notFound,
+        "Couldn't get!"
+      );
+
+      Quote.findById = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue(false),
+      }));
+
+      await getQuoteById(req as Request, response as Response, next);
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+
+  describe("When it receives an invalid id", () => {
+    test("Then it should call next function with an error with message 'Invalid Id'", async () => {
+      const req: Partial<Request> = {
+        params: { quoteId: "" },
+      };
+      const expectedError = new CustomError(
+        "Invalid object id!",
+        badRequest,
+        "Invalid data!"
+      );
+      mongoose.Types.ObjectId.isValid = () => false;
+      Quote.findById = jest.fn().mockImplementationOnce(() => ({
+        exec: jest.fn().mockResolvedValue(mockedDataBaseResponse),
+      }));
+
+      await getQuoteById(req as Request, response as Response, next);
 
       expect(next).toHaveBeenCalledWith(expectedError);
     });
