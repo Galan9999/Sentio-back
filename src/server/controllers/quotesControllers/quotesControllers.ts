@@ -93,3 +93,27 @@ export const createQuote = async (
     );
   }
 };
+
+export const getQuoteById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { quoteId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(quoteId)) {
+      throw new CustomError("Invalid object id!", badRequest, "Invalid data!");
+    }
+
+    const quote = await Quote.findById({ _id: quoteId }).exec();
+
+    if (!quote) {
+      throw new CustomError("Couldn't get!", notFound, "Couldn't get!");
+    }
+
+    res.status(200).json({ quote });
+  } catch (error) {
+    next(new CustomError((error as Error).message, notFound, "Couldn't get!"));
+  }
+};
