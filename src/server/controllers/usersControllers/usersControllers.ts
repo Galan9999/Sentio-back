@@ -28,7 +28,7 @@ export const registerUser = async (
   const saltLenght = 8;
 
   try {
-    const hashedPassword = bycrypt.hash(password, saltLenght);
+    const hashedPassword = await bycrypt.hash(password, saltLenght);
 
     await User.create({
       username,
@@ -38,33 +38,13 @@ export const registerUser = async (
 
     res.status(created).json({ message: "user successfully created!" });
   } catch (error) {
-    if (error.code && error.code === 11000) {
-      if (error.keyPattern.email) {
-        next(
-          new CustomError(
-            "The email is already in use.",
-            409,
-            "Email already in use."
-          )
-        );
-      } else if (error.keyPattern.name) {
-        next(
-          new CustomError(
-            "The name is already in use.",
-            409,
-            "Name already in use."
-          )
-        );
-      } else {
-        const newError = new CustomError(
-          (error as Error).message,
-          conflict,
-          "couldn't create"
-        );
+    const newError = new CustomError(
+      (error as Error).message,
+      conflict,
+      "couldn't create"
+    );
 
-        next(newError);
-      }
-    }
+    next(newError);
   }
 };
 
