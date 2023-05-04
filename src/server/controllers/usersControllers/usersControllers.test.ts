@@ -89,6 +89,26 @@ describe("Given the RegisterUser controller", () => {
       expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
+
+  describe("When there is an error while mongoose method", () => {
+    test("Then it should call next function with error message 'Couldn't create!'", async () => {
+      const expectedError = new CustomError(
+        "Couldn't create",
+        conflict,
+        "Couldn't create!"
+      );
+
+      User.create = jest.fn().mockResolvedValue(false);
+
+      await registerUser(
+        registerRequest as CustomRegisterRequestCredentials,
+        response as Response,
+        next
+      );
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
 });
 
 describe("Given the loginUser controller", () => {

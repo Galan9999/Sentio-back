@@ -5,22 +5,20 @@ import createDebug from "debug";
 import CustomError from "../../../CustomError/CustomError.js";
 import User from "../../../database/models/User.js";
 import statusCodes from "../../utils/statusCodes.js";
-import { type RegisterCredentials, type UserCredentials } from "../types.js";
+import {
+  type CustomRegisterRequestCredentials,
+  type CustomRequestCredentials,
+} from "../types.js";
 
 const debug = createDebug("sentio:server:controllers:userControllers");
 
 const {
   clientError: { unauthorized, conflict },
   success: { okCode, created },
-  serverError: { internalServer },
 } = statusCodes;
 
 export const registerUser = async (
-  req: Request<
-    Record<string, unknown>,
-    Record<string, unknown>,
-    RegisterCredentials
-  >,
+  req: CustomRegisterRequestCredentials,
   res: Response,
   next: NextFunction
 ) => {
@@ -30,30 +28,26 @@ export const registerUser = async (
   try {
     const hashedPassword = await bycrypt.hash(password, saltLenght);
 
-    await User.create({
+    const user = await User.create({
       username,
       email,
       password: hashedPassword,
     });
 
+    if (!user) {
+      throw new CustomError("couldn't create", conflict, "couldn't create");
+    }
+
     res.status(created).json({ message: "user successfully created!" });
   } catch (error) {
-    const newError = new CustomError(
-      (error as Error).message,
-      conflict,
-      "couldn't create"
+    next(
+      new CustomError((error as Error).message, conflict, "couldn't create")
     );
-
-    next(newError);
   }
 };
 
 export const loginUser = async (
-  req: Request<
-    Record<string, unknown>,
-    Record<string, unknown>,
-    UserCredentials
-  >,
+  req: CustomRequestCredentials,
   res: Response,
   next: NextFunction
 ) => {
