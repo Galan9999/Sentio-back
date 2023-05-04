@@ -21,6 +21,12 @@ export type CustomRequestCredentials = Request<
   UserCredentials
 >;
 
+export type CustomRegisterRequestCredentials = Request<
+  Record<string, unknown>,
+  Record<string, unknown>,
+  RegisterCredentials
+>;
+
 export interface CustomRequest extends Request {
   owner: string;
   id: string;
