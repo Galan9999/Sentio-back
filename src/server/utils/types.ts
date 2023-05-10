@@ -1,4 +1,4 @@
-interface StatusCode {
+export interface StatusCodes {
   clientError: {
     notFound: number;
     badRequest: number;
@@ -8,7 +8,13 @@ interface StatusCode {
   serverError: {
     internalServer: number;
   };
-  success: { okCode: number };
+  success: { okCode: number; created: number };
 }
-
-export default StatusCode;
+export interface Urls {
+  registerUrl: string;
+  loginUrl: string;
+  getQuote: string;
+  getByIdQuote: string;
+  createQuote: string;
+  usersUrl: string;
+}

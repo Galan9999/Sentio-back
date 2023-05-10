@@ -8,12 +8,12 @@
     "build": "tsc",
     "build:dev": "tsc -w",
     "start": "node dist",
-    "prepare": "husky install",
     "start:dev": "node --watch dist",
     "test": "npm run test:unit && npm run test:integration",
     "test:coverage": "npm run test:unit -- --coverage --watchAll=false && npm run test:integration -- --coverage --watchAll=false",
     "test:unit": "jest --config=jest.config.cjs",
-    "test:integration": "jest --config=jest.integration.config.cjs"
+    "test:integration": "jest --config=jest.integration.config.cjs",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",

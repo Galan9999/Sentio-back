@@ -76,7 +76,7 @@ export const createQuote = async (
   try {
     const newQuote = await Quote.create({
       ...body,
-      owner,
+      owner: new mongoose.Types.ObjectId(owner),
     });
     if (!newQuote) {
       throw new CustomError(

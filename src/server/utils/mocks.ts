@@ -1,3 +1,5 @@
+import { type RegisterCredentials } from "../controllers/types";
+
 export const mockCustomQuoteRequest = {
   body: {
     author: "Frida Kahlo",
@@ -11,4 +13,10 @@ export const mockCustomQuoteRequest = {
     backgroundInfo:
       "Frida Kahlo was a Mexican painter known for her self-portraits, which often incorporated elements of her physical and emotional pain.",
   },
+};
+
+export const mockedRegisterCredentials: RegisterCredentials = {
+  username: "Carles",
+  password: "galan9999",
+  email: "cece@ece",
 };

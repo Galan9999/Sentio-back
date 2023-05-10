@@ -6,23 +6,19 @@ import bycrypt from "bcryptjs";
 import connectDatabase from "../../../database/connectDatabase";
 import User from "../../../database/models/User";
 import { app } from "../../app";
-import {
-  type RegisterCredentials,
-  type UserCredentials,
-} from "../../controllers/types";
+import { type UserCredentials } from "../../controllers/types";
 import statusCodes from "../../utils/statusCodes";
+import urls from "../../utils/urls";
+import { mockedRegisterCredentials } from "../../utils/mocks";
 
 const {
   success: { okCode, created },
   clientError: { unauthorized, conflict },
 } = statusCodes;
 
+const { usersUrl, loginUrl, registerUrl } = urls;
+
 const saltLenght = 8;
-const mockedRegisterCredentials: RegisterCredentials = {
-  username: "Carles",
-  password: "galan9999",
-  email: "cece@ece",
-};
 
 let server: MongoMemoryServer;
 
@@ -40,9 +36,6 @@ afterEach(async () => {
   await User.deleteMany();
 });
 
-const loginUrl = "/users/login";
-const registerUrl = "/users/register";
-
 describe("Given POST 'users/login endpoint", () => {
   describe("When it receives a request with name 'Carles' and password 'galan99'", () => {
     test("Then it should return a response with status code 200", async () => {
@@ -59,7 +52,7 @@ describe("Given POST 'users/login endpoint", () => {
       await User.create({ ...loginCredentials, password: hashedPassword });
 
       const response = await request(app)
-        .post(loginUrl)
+        .post(`${usersUrl}${loginUrl}`)
         .send(loginCredentials)
         .expect(okCode);
 
@@ -76,7 +69,7 @@ describe("Given POST 'users/login endpoint", () => {
       const expectedMessage = "Wrong credentials!";
 
       const response = await request(app)
-        .post(loginUrl)
+        .post(`${usersUrl}${loginUrl}`)
         .send(loginCredentials)
         .expect(unauthorized);
 
@@ -91,7 +84,7 @@ describe("Given the POST users/register endpoint", () => {
       const expectedMessage = "user successfully created!";
 
       const response = await request(app)
-        .post(registerUrl)
+        .post(`${usersUrl}${registerUrl}`)
         .send(mockedRegisterCredentials)
         .expect(created);
 
@@ -106,7 +99,7 @@ describe("Given the POST users/register endpoint", () => {
       const expectedMessage = "couldn't create";
 
       const response = await request(app)
-        .post(registerUrl)
+        .post(`${usersUrl}${registerUrl}`)
         .send(undefined)
         .expect(conflict);
 
