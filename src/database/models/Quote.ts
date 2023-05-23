@@ -22,17 +22,21 @@ const quoteSchema = new Schema({
     type: String,
     required: true,
   },
-  lived: {
+  creationTime: {
     type: String,
-    required: true,
+    default: Date.now,
   },
-  backgroundInfo: {
+  lived: {
     type: String,
     required: true,
   },
   owner: {
     type: SchemaTypes.ObjectId,
     ref: User,
+  },
+  backgroundInfo: {
+    type: String,
+    required: true,
   },
 });
 
