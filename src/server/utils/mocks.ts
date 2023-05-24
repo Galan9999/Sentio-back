@@ -10,6 +10,7 @@ export const mockCustomQuoteRequest = {
     tags: "artists",
     lived: "1907 - 1954",
     owner: "6408566fc095933dd9f089b2",
+    creationTime: "12321443545346",
     backgroundInfo:
       "Frida Kahlo was a Mexican painter known for her self-portraits, which often incorporated elements of her physical and emotional pain.",
   },

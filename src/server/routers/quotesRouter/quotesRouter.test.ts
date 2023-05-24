@@ -40,6 +40,7 @@ const mockedQuote: QuoteStructure = {
   tags: "artists",
   lived: "1907 - 1954",
   owner: "6408566fc095933dd9f089b2",
+  creationTime: "12321443545346",
   backgroundInfo:
     "Frida Kahlo was a Mexican painter known for her self-portraits, which often incorporated elements of her physical and emotional pain.",
 };
@@ -96,6 +97,7 @@ describe("Given Create Quote endpoint", () => {
           tags: "artists",
           lived: "1907 - 1954",
           owner: "1234",
+          creationTime: "12321443545346",
           backgroundInfo:
             "Frida Kahlo was a Mexican painter known for her self-portraits, which often incorporated elements of her physical and emotional pain.",
         })

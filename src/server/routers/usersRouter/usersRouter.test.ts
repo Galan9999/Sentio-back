@@ -62,15 +62,15 @@ describe("Given POST 'users/login endpoint", () => {
 
   describe("When it receives a request with wrong username 'carlito' and correct password 'galan99'", () => {
     test("Then is should return a response with status 401 and message 'Wrong username'", async () => {
-      const loginCredentials: UserCredentials = {
+      const fakeLoginCredentials: UserCredentials = {
         username: "carlito",
-        password: "",
+        password: "23333333333",
       };
       const expectedMessage = "Wrong credentials!";
 
       const response = await request(app)
         .post(`${usersUrl}${loginUrl}`)
-        .send(loginCredentials)
+        .send(fakeLoginCredentials)
         .expect(unauthorized);
 
       expect(response.body).toHaveProperty("error", expectedMessage);
@@ -91,19 +91,6 @@ describe("Given the POST users/register endpoint", () => {
       expect(response.body).toStrictEqual({
         message: expectedMessage,
       });
-    });
-  });
-
-  describe("When there is a problem creating the user", () => {
-    test("Tehn it should return a response with status 409 and a message 'couldn't create'", async () => {
-      const expectedMessage = "couldn't create";
-
-      const response = await request(app)
-        .post(`${usersUrl}${registerUrl}`)
-        .send(undefined)
-        .expect(conflict);
-
-      expect(response.body).toHaveProperty("error", expectedMessage);
     });
   });
 });

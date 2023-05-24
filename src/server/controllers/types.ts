@@ -34,6 +34,7 @@ export interface QuoteStructure {
   tags: string;
   lived: string;
   backgroundInfo: string;
+  creationTime: Date | string;
   owner: string;
 }
 
