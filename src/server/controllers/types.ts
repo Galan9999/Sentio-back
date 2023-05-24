@@ -26,11 +26,6 @@ export type CustomRegisterRequestCredentials = Request<
   Record<string, unknown>,
   RegisterCredentials
 >;
-
-export interface CustomRequest extends Request {
-  owner: string;
-  id: string;
-}
 export interface QuoteStructure {
   author: string;
   image: string;
@@ -39,6 +34,7 @@ export interface QuoteStructure {
   tags: string;
   lived: string;
   backgroundInfo: string;
+  creationTime: Date | string;
   owner: string;
 }
 
@@ -48,17 +44,14 @@ export interface DataBaseStructure extends QuoteStructure {
     $oid: string;
   };
 }
-
-export interface QuoteModelStructure extends QuoteStructure {
-  id: string;
-}
-
 export interface CustomQuoteRequest
   extends Request<
+    Partial<Params>,
     Record<string, unknown>,
-    Record<string, unknown>,
-    QuoteStructure,
-    { token: string }
+    Partial<QuoteStructure>
   > {
-  userId: string;
+  userId?: string;
+}
+export interface Params {
+  id: string;
 }

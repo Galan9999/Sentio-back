@@ -6,6 +6,7 @@ import CustomError from "../../../CustomError/CustomError.js";
 import User from "../../../database/models/User.js";
 import statusCodes from "../../utils/statusCodes.js";
 import {
+  type CustomJwtPayload,
   type CustomRegisterRequestCredentials,
   type CustomRequestCredentials,
 } from "../types.js";
@@ -72,9 +73,9 @@ export const loginUser = async (
       );
     }
 
-    const jwtPayload = {
-      sub: user?._id,
-      username,
+    const jwtPayload: CustomJwtPayload = {
+      id: user?._id.toString(),
+      username: user?.username,
     };
 
     const token = jwt.sign(jwtPayload, process.env.JWT_SECRET!);

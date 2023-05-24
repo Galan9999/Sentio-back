@@ -4,7 +4,7 @@ import { Quote } from "../../../database/models/Quote.js";
 import CustomError from "../../../CustomError/CustomError.js";
 import statusCodes from "../../utils/statusCodes.js";
 import mongoose from "mongoose";
-import { type CustomRequest, type CustomQuoteRequest } from "../types.js";
+import { type CustomQuoteRequest } from "../types.js";
 
 const {
   clientError: { notFound, badRequest, conflict },
@@ -37,18 +37,18 @@ export const getQuotes = async (
 };
 
 export const deleteQuote = async (
-  req: CustomRequest,
+  req: Request<{ id: string }>,
   res: Response,
   next: NextFunction
 ) => {
-  const { quoteId } = req.params;
+  const id = req.params?.id;
 
   try {
-    if (!mongoose.Types.ObjectId.isValid(quoteId)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new CustomError("Invalid object id!", badRequest, "Invalid data!");
     }
 
-    const deletedQuote = await Quote.findByIdAndDelete(quoteId).exec();
+    const deletedQuote = await Quote.findByIdAndDelete(id).exec();
 
     if (!deletedQuote) {
       throw new CustomError(
@@ -100,13 +100,13 @@ export const getQuoteById = async (
   next: NextFunction
 ) => {
   try {
-    const { quoteId } = req.params;
+    const { id } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(quoteId)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new CustomError("Invalid object id!", badRequest, "Invalid data!");
     }
 
-    const quote = await Quote.findById({ _id: quoteId }).exec();
+    const quote = await Quote.findById(id).exec();
 
     if (!quote) {
       throw new CustomError("Couldn't get!", notFound, "Couldn't get!");

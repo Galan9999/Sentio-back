@@ -11,7 +11,6 @@ import {
 } from "./quotesControllers";
 import {
   type CustomQuoteRequest,
-  type CustomRequest,
   type DataBaseStructure,
   type QuotesStructure,
 } from "../types";
@@ -20,6 +19,7 @@ import { mockCustomQuoteRequest } from "../../utils/mocks";
 const {
   success: { okCode, created },
   clientError: { notFound, badRequest, conflict },
+  serverError: { internalServer },
 } = statusCodes;
 
 const mockQuotesList: QuotesStructure = [
@@ -32,6 +32,7 @@ const mockQuotesList: QuotesStructure = [
     owner: "1234",
     quote:
       "If you would be a real seeker after truth, it is necessary that at least once in your life you doubt, as far as possible, all things",
+    creationTime: "edwefcew",
     backgroundInfo:
       "French philosopher, scientist, and mathematician, widely considered a seminal figure in the emergence of modern philosophy and science. Mathematics was central to his method of inquiry, and he connected the previously separate fields of geometry and algebra into analytic geometry.",
   },
@@ -49,6 +50,7 @@ const mockedDataBaseResponse: DataBaseStructure = {
     "Change will not come if we wait for some other person or some other time. We are the ones we've been waiting for. We are the change that we seek.",
   tags: "politics",
   lived: "1961 - present",
+  creationTime: "edwefcew",
   owner: "12345",
   backgroundInfo:
     "Barack Obama is an American politician and attorney who served as the 44th president of the United States from 2009 to 2017.",
@@ -69,7 +71,7 @@ const mockedQuote = {
     "Barack Obama is an American politician and attorney who served as the 44th president of the United States from 2009 to 2017.",
 };
 
-const request: Partial<Request> = {};
+const request: Partial<CustomQuoteRequest> = {};
 
 const response: Partial<Response> = {
   status: jest.fn().mockReturnThis(),
@@ -106,7 +108,11 @@ describe("Given the getQuotes controller", () => {
         exec: jest.fn().mockResolvedValue(false),
       }));
 
-      await getQuotes(request as Request, response as Response, next);
+      await getQuotes(
+        request as CustomQuoteRequest,
+        response as Response,
+        next
+      );
 
       expect(next).toHaveBeenCalledWith(customError);
     });
@@ -121,13 +127,17 @@ describe("Given the deleteQuote controller", () => {
 
       const databaseResponse = mockedDataBaseResponse;
 
-      request.params = { quoteId: "6411df20c656524ed59cd21f" };
+      request.params = { id: "6411df20c656524ed59cd21f" };
 
       Quote.findOneAndDelete = jest.fn().mockImplementationOnce(() => ({
         exec: jest.fn().mockResolvedValue(databaseResponse),
       }));
 
-      await deleteQuote(request as CustomRequest, response as Response, next);
+      await deleteQuote(
+        request as Request<{ id: string }>,
+        response as Response,
+        next
+      );
 
       expect(response.status).toHaveBeenCalledWith(expectedStatusCode);
       expect(response.json).toHaveBeenCalledWith(expetedBodyResponse);
@@ -144,7 +154,11 @@ describe("Given the deleteQuote controller", () => {
 
       request.params = { id: "" };
 
-      await deleteQuote(request as CustomRequest, response as Response, next);
+      await deleteQuote(
+        request as Request<{ id: string }>,
+        response as Response,
+        next
+      );
 
       Quote.findOneAndDelete = jest.fn().mockImplementationOnce(() => ({
         exec: jest.fn().mockResolvedValue(null),
@@ -157,9 +171,9 @@ describe("Given the deleteQuote controller", () => {
   describe("When it receives a request with an id that dont exists", () => {
     test("Then it should call its next method with an error message of 'Invalid data!'", async () => {
       const expectedError = new CustomError(
-        "Invalid object id!",
-        badRequest,
-        "Invalid data!"
+        "Mongoose method failed!",
+        internalServer,
+        "Couldn't delete!"
       );
 
       const databaseResponse = mockedDataBaseResponse;
@@ -170,7 +184,11 @@ describe("Given the deleteQuote controller", () => {
         exec: jest.fn().mockResolvedValue(databaseResponse),
       }));
 
-      await deleteQuote(request as CustomRequest, response as Response, next);
+      await deleteQuote(
+        request as Request<{ id: string }>,
+        response as Response,
+        next
+      );
 
       expect(next).toHaveBeenCalledWith(expectedError);
     });
@@ -182,7 +200,11 @@ describe("Given the deleteQuote controller", () => {
 
       mongoose.Types.ObjectId.isValid = () => false;
 
-      await deleteQuote(request as CustomRequest, response as Response, next);
+      await deleteQuote(
+        request as Request<{ id: string }>,
+        response as Response,
+        next
+      );
 
       expect.objectContaining({ publicMessage: expectedErrorMessage });
     });
@@ -198,7 +220,11 @@ describe("Given the deleteQuote controller", () => {
         exec: jest.fn().mockResolvedValue(null),
       }));
 
-      await deleteQuote(request as CustomRequest, response as Response, next);
+      await deleteQuote(
+        request as Request<{ id: string }>,
+        response as Response,
+        next
+      );
 
       expect(next).toHaveBeenCalledWith(
         expect.objectContaining({ publicMessage: expectedErrorMessage })
@@ -287,7 +313,7 @@ describe("Given getQuote controller", () => {
   describe("When it receives an invalid id", () => {
     test("Then it should call next function with an error with message 'Invalid Id'", async () => {
       const req: Partial<Request> = {
-        params: { quoteId: "" },
+        params: { id: "" },
       };
       const expectedError = new CustomError(
         "Invalid object id!",
