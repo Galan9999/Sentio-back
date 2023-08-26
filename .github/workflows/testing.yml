@@ -18,3 +18,5 @@ jobs:
         run: npm test
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          API_GATEWAY: ${{ secrets.API_GATEWAY }}

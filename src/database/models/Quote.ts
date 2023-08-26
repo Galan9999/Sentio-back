@@ -1,5 +1,4 @@
 import { model, Schema, SchemaTypes } from "mongoose";
-import User from "./User.js";
 
 const quoteSchema = new Schema({
   author: {

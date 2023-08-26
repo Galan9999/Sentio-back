@@ -40,6 +40,7 @@ const mockedQuote: QuoteStructure = {
   tags: "artists",
   lived: "1907 - 1954",
   owner: "6408566fc095933dd9f089b2",
+  imageBackup: "a",
   creationTime: "12321443545346",
   backgroundInfo:
     "Frida Kahlo was a Mexican painter known for her self-portraits, which often incorporated elements of her physical and emotional pain.",
@@ -88,19 +89,18 @@ describe("Given Create Quote endpoint", () => {
         .post(`/quotes/create`)
         // eslint-disable-next-line @typescript-eslint/naming-convention
         .set({ Authorization: bearerToken })
-        .send({
-          author: "Frida Kahlo",
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Frida_Kahlo%2C_by_Guillermo_Kahlo.jpg/440px-Frida_Kahlo%2C_by_Guillermo_Kahlo.jpg",
-          country: "Mexico",
-          quote: "Feet, what do I need them for if I have wings to fly?",
-          tags: "artists",
-          lived: "1907 - 1954",
-          owner: "1234",
-          creationTime: "12321443545346",
-          backgroundInfo:
-            "Frida Kahlo was a Mexican painter known for her self-portraits, which often incorporated elements of her physical and emotional pain.",
-        })
+        .field("author", "Frida Kahlo")
+        .field("country", "Mexico")
+        .field("quote", "Feet, what do I need them for if I have wings to fly?")
+        .field("tags", "artists")
+        .field("lived", "1907 - 1954")
+        .field("owner", "1234")
+        .field("creationTime", "12321443545346")
+        .field(
+          "backgroundInfo",
+          "Frida Kahlo was a Mexican painter known for her self-portraits, which often incorporated elements of her physical and emotional pain."
+        )
+        .attach("image", "uploads/testimage.jpg")
         .expect(created);
 
       expect(response.body).toStrictEqual(expectedResult);
