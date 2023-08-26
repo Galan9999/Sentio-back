@@ -30,6 +30,7 @@ const mockQuotesList: QuotesStructure = [
     lived: "31/03/1596-11/02/1650",
     tags: "#politics",
     owner: "1234",
+    imageBackup: "a",
     quote:
       "If you would be a real seeker after truth, it is necessary that at least once in your life you doubt, as far as possible, all things",
     creationTime: "edwefcew",
@@ -51,6 +52,7 @@ const mockedDataBaseResponse: DataBaseStructure = {
   tags: "politics",
   lived: "1961 - present",
   creationTime: "edwefcew",
+  imageBackup: "a",
   owner: "12345",
   backgroundInfo:
     "Barack Obama is an American politician and attorney who served as the 44th president of the United States from 2009 to 2017.",
