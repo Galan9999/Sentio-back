@@ -119,7 +119,7 @@ describe("Given the loginUser controller", () => {
         token: "$2a$12$8S4LCmOGcmN/H/Hsjd.zI.WcGa2q1KpJANUCPfxePRoNjYXwCRNUC",
       };
       User.findOne = jest.fn().mockImplementation(() => ({
-        exec: jest.fn().mockResolvedValue({ ...mockUser }),
+        exec: jest.fn().mockResolvedValue({ ...mockUser, _id: "1234" }),
       }));
 
       bcrypt.compare = jest.fn().mockResolvedValue(true);

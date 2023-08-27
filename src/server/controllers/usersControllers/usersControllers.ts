@@ -1,4 +1,4 @@
-import { type Response, type NextFunction, type Request } from "express";
+import { type Response, type NextFunction } from "express";
 import bycrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import createDebug from "debug";

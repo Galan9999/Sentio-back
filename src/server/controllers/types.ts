@@ -36,6 +36,7 @@ export interface QuoteStructure {
   backgroundInfo: string;
   creationTime: Date | string;
   owner: string;
+  imageBackup: string;
 }
 
 export type QuotesStructure = QuoteStructure[];
@@ -51,7 +52,9 @@ export interface CustomQuoteRequest
     Partial<QuoteStructure>
   > {
   userId?: string;
+  imageBackup?: string;
 }
+
 export interface Params {
   id: string;
 }

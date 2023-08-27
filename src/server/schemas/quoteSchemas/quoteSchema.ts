@@ -4,7 +4,7 @@ const quoteSchema = {
   body: Joi.object({
     author: Joi.string().required(),
     country: Joi.string().required(),
-    image: Joi.string().required(),
+    image: Joi.string(),
     tags: Joi.string().required(),
     creationTime: Joi.date().required(),
     lived: Joi.string().required(),
