@@ -13,6 +13,14 @@ module.exports = {
         ],
         "@typescript-eslint/consistent-type-assertions": "off",
         "no-implicit-coercion": "off",
+        "@typescript-eslint/no-misused-promises": [
+          "error",
+          {
+            checksVoidReturn: {
+              arguments: false,
+            },
+          },
+        ],
       },
       extends: ["xo-typescript", "prettier"],
       files: ["*.ts", "*.tsx"],

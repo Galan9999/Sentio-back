@@ -39,6 +39,8 @@ export const registerUser = async (
       throw new CustomError("couldn't create", conflict, "couldn't create");
     }
 
+    debug(`${username} has been registered successfully`);
+
     res.status(created).json({ message: "user successfully created!" });
   } catch (error) {
     next(

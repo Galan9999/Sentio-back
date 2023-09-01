@@ -1,9 +1,10 @@
 import { type Urls } from "./types";
 
 const urls: Urls = {
-  getQuote: "/",
-  getByIdQuote: "/:quoteId",
-  createQuote: "/create",
+  getQuotesUrl: "/",
+  getByIdQuoteUrl: "/:id",
+  deleteQuoteUrl: "/:id",
+  createQuoteUrl: "/create",
   registerUrl: "/register",
   loginUrl: "/login",
   usersUrl: "/users",
