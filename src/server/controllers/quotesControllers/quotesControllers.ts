@@ -58,6 +58,7 @@ export const deleteQuote = async (
       );
     }
 
+    debug(`quote ${id} has been logged successfully`);
     res.status(okCode).json({ message: `${deletedQuote.author} deleted!` });
   } catch (error) {
     next(

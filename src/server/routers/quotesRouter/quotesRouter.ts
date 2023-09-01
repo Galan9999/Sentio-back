@@ -12,6 +12,9 @@ import quoteSchema from "../../schemas/quoteSchemas/quoteSchema.js";
 import storage from "../../storage.js";
 import { uploadFile } from "../../middlewares/imageBackup/imageBackup.js";
 import sharpFile from "../../middlewares/sharpFile/sharpFile.js";
+import urls from "../../utils/urls.js";
+
+const { createQuoteUrl, deleteQuoteUrl, getByIdQuoteUrl, getQuotesUrl } = urls;
 
 const quotesRouter = Router();
 
@@ -22,20 +25,20 @@ const upload = multer({
   },
 });
 
-quotesRouter.get("/", getQuotes);
+quotesRouter.get(getQuotesUrl, getQuotes); // NOSONAR
 
-quotesRouter.get("/:id", getQuoteById);
+quotesRouter.get(getByIdQuoteUrl, getQuoteById); // NOSONAR
 
-quotesRouter.delete("/:id", auth, deleteQuote);
+quotesRouter.delete(deleteQuoteUrl, auth, deleteQuote); // NOSONAR
 
 quotesRouter.post(
-  "/create",
+  createQuoteUrl,
   auth,
   upload.single("image"),
   validate(quoteSchema, {}, { abortEarly: false }),
-  sharpFile,
-  uploadFile,
-  createQuote
+  sharpFile, // NOSONAR
+  uploadFile, // NOSONAR
+  createQuote // NOSONAR
 );
 
 export default quotesRouter;

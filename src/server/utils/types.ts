@@ -13,8 +13,9 @@ export interface StatusCodes {
 export interface Urls {
   registerUrl: string;
   loginUrl: string;
-  getQuote: string;
-  getByIdQuote: string;
-  createQuote: string;
+  deleteQuoteUrl: string;
+  getQuotesUrl: string;
+  getByIdQuoteUrl: string;
+  createQuoteUrl: string;
   usersUrl: string;
 }

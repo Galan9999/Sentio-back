@@ -281,7 +281,7 @@ describe("Given the createQuote controller", () => {
 
 describe("Given getQuote controller", () => {
   const req: Partial<Request> = {
-    params: { quoteId: mockedQuote.id },
+    params: { id: mockedQuote.id },
   };
   describe("When it recieves a request with the id: `6411df20c656524ed59cd21f`", () => {
     test("Then it should respond with status 200 and respond with a quote with id `6411df20c656524ed59cd21f`", async () => {
